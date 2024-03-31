@@ -1,0 +1,145 @@
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-12 shadow p-3 my-4 bg-body rounded text-center no-print">
+            <p class="h5"> Reporte de Bautismos ICBJVE </p>
+            <div class="row justify-content-md-center pt-3">
+              <div class="col-md-12">
+                <app-select-ciclos
+                        showCoord="si"
+                        showSemana="no"
+                        showPeriodo="no"
+                        showInactivas="no"
+                        (onSeendCicloSemana)="obtenerCiclo( $event )">
+                </app-select-ciclos>
+              </div>
+            </div>
+            <div class="row justify-content-md-center pt-3" *ngIf="load" >
+              <div class="col-md-6">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 pt-2 text-center" *ngIf="mostrarTabla">
+                <button type="button" class="btn btn-info" onclick="javascript:window.print()">Imprimir</button>
+                <app-btn-excel
+                            tabla_Im = "reporteBautismos"
+                            nombreT = "R Bautismos"
+                >
+                </app-btn-excel>
+            </div>
+        </div>
+        <!-- TABLA -->
+        <div class="col-sm-10" *ngIf="mostrarTabla" id="reporteBautismos">
+            <div *ngFor="let subC of tablas;let i = index">
+                <div class="row table-responsive">
+                    <table class="table table-bordered table-sm table-hover text-center">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <td colspan="10">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <img src="/assets/img/logo-icbjve-letras.gif" alt="" width="110" class="d-inline-block align-text-top">
+                                        </div>
+                                        <div class="col-6">
+                                            <p class="h6 mt-2 mb-0">I.C.B. "JESUCRISTO ES LA VIDA ETERNA"</p>
+                                            <p class="h7 my-0">Reporte de Bautismos</p>
+                                            <p class="h7 my-0">
+                                                <strong>Coordinador</strong>: {{ nombreCoord(subC[0]?.Coordinacion) | titlecase }}
+                                            </p>
+                                            <p class="h7 my-0">
+                                                <strong>SubCoordinador: {{ subC[0]?.SubCoor }} </strong> {{ nombreSubC(subC[0]?.Coordinacion,subC[0]?.SubCoor) | titlecase }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td colspan="4">
+                                    <p class="h7 my-0">
+                                        <strong> {{ fechaHoy | date}} </strong>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="col"></th>
+                                <th class="text-start min-ancho" scope="col">Nombre</th>
+                                <th scope="col">-</th>
+                                <th scope="col" class="col-b">1</th>
+                                <th scope="col" class="col-b">2</th>
+                                <th scope="col" class="col-b">3</th>
+                                <th scope="col" class="col-b">4</th>
+                                <th scope="col" class="col-b">5</th>
+                                <th scope="col" class="col-b">6</th>
+                                <th scope="col" class="col-b">7</th>
+                                <th scope="col" class="col-b">8</th>
+                                <th scope="col" class="col-b">9</th>
+                                <th scope="col" class="col-b">10</th>
+                                <th scope="col" class="col-b">T</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let celula of subC; let j = index" class="{{ color(celula?.Celula) }}" [ngStyle]="{ 'background-color':celula?.Celula === 0 ? '#C0392B' : '' }">
+
+                                <th scope="row"> {{ celula?.Celula == 0 ? "" : celula?.Celula }} </th>
+                                <td class="text-start"> {{ (celula?.Lider.length>30) ? ((celula?.Lider | slice:0:30)+'..' | titlecase) : (celula?.Lider) | titlecase }} </td>
+                                <td class="color-vacio"> </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p1) }}">
+                                    {{ formatoBautismo(i,1, celula?.Celula, listaBautismos[celula?.Celula]?.p1) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p2) }}" >
+                                    {{ formatoBautismo(i,2,celula?.Celula,listaBautismos[celula?.Celula]?.p2) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p3) }}" >
+                                    {{ formatoBautismo(i,3,celula?.Celula,listaBautismos[celula?.Celula]?.p3) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p4) }}" >
+                                    {{ formatoBautismo(i,4,celula?.Celula,listaBautismos[celula?.Celula]?.p4) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p5) }}" >
+                                    {{ formatoBautismo(i,5,celula?.Celula,listaBautismos[celula?.Celula]?.p5) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p6) }}" >
+                                    {{ formatoBautismo(i,6,celula?.Celula,listaBautismos[celula?.Celula]?.p6) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p7) }}" >
+                                    {{ formatoBautismo(i,7,celula?.Celula,listaBautismos[celula?.Celula]?.p7) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p8) }}" >
+                                    {{ formatoBautismo(i,8,celula?.Celula,listaBautismos[celula?.Celula]?.p8) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p9) }}" >
+                                    {{ formatoBautismo(i,9,celula?.Celula,listaBautismos[celula?.Celula]?.p9) }}
+                                </td>
+                                <td scope="col" class="{{ textNegritas(listaBautismos[celula?.Celula]?.p10) }}" >
+                                    {{ formatoBautismo(i,10,celula?.Celula,listaBautismos[celula?.Celula]?.p10) }}
+                                </td>
+                                <td scope="col" class="color-supervisor fw-bold">
+                                    {{ listaBautismos[celula?.Celula]?.t}}
+                                    {{sumarTotalBautismosCoord(i,listaBautismos[celula?.Celula]?.t)}}
+                                </td>
+                            </tr>
+                            <!--TOTALES-->
+                            <tr class="table-secondary">
+                              <th scope="col"></th>
+                              <th class="text-start min-ancho" scope="col">TOTAL</th>
+                              <th scope="col"></th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,0) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,1) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,2) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,3) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,4) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,5) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,6) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,7) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,8) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,9) }}</th>
+                              <th scope="col" class="col-b">{{ obtenerValorSeguro(i,10) }}</th>
+                              {{resetTotalesBautismos(i)}}
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagebreak"></div>
+            </div>
+        </div>
+    </div>
+</div>

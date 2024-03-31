@@ -1,0 +1,486 @@
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-12 shadow p-3 my-4 bg-body rounded text-center">
+        <p class="h5"> Estructura General ICBJVE </p>
+        <div class="row justify-content-md-center pt-3">
+          <div class="col-md-6">
+            <app-select-ciclos 
+                      showSemana="no"
+                      showInactivas="si"
+                      (onSeendCicloSemana)="obtenerCiclo( $event )">
+            </app-select-ciclos>
+          </div>
+        </div>
+        <div class="row justify-content-md-center pt-3" *ngIf="load" >
+          <div class="col-md-6">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-md-10 animate__animated animate__fadeIn animate__faster" *ngIf="mostrarTabla">
+      <div *ngFor="let subC of tablas;let i = index">
+        <div class="col-md-12 col-sm-12 row">
+            <div class="col-4 text-center">
+                <img src="/assets/img/logo-icbjve-letras.gif" alt="" width="110" class="d-inline-block align-text-top">
+            </div>
+            <div class="col-8 text-center">
+                <p class="h6 mt-2 mb-0">I.C.B. "JESUCRISTO ES LA VIDA ETERNA"</p>
+                <p class="h7 my-0"> Sistema Celular</p>
+                <p class="h7 my-0"><strong>Coordinador</strong>: {{ nombreCoord(subC[0]?.Coordinacion) }}
+                  <span (click)="coordinadorDatos(subC[0]?.Coordinacion)"  class="align-middle mx-1 text-warning mano" data-bs-toggle="modal" data-bs-target="#editModalCoord">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">drive_file_rename_outline</mat-icon>
+                  </span>  
+                </p>
+                <p class="h7 my-0"><strong>SubCoordinador: {{ subC[0]?.SubCoor }} </strong> {{ nombreSubC(subC[0]?.Coordinacion,subC[0]?.SubCoor) }}
+                  <span (click)="subCoordinadorDatos(subC[0]?.Coordinacion,subC[0]?.SubCoor)" class="align-middle mx-1 text-warning mano" data-bs-toggle="modal" data-bs-target="#editModalSubC">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">drive_file_rename_outline</mat-icon>
+                  </span> 
+                </p>
+            </div>
+        </div>
+        <div class="row table-responsive">
+          <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Cargo</th>
+                  <th scope="col">Celula</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">E</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let celulas of subC" class="{{ celulas?.Celula == 0 ? 'color-supervisor' : '' }}" >
+                  <th> {{ celulas.Celula == 0 ? "Supervisor" : "Líder" }} </th>
+                  <td> {{ celulas.Celula == 0 ? "" : celulas.Celula }} </td>
+                  <td> {{ celulas.Lider }} </td>
+                  <td> {{ celulas.estado == 1 ? "Activa" : "inactiva" }} </td>
+                  <!-- Celula -->
+                  <td *ngIf=" celulas.Celula != 0 " > 
+                    <span (click)="celulaDatos(celulas)" class="align-middle mx-2 text-warning mano" data-bs-toggle="modal" data-bs-target="#editModal">
+                      <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                    </span> 
+                    <span (click)="celulaDatos(celulas)" class="align-middle mx-2 text-danger mano" data-bs-toggle="modal" data-bs-target="#deleteCelulaModal">
+                      <mat-icon aria-hidden="false" aria-label="Example home icon">delete_sweep</mat-icon>
+                    </span>
+                  </td>
+                  <!-- Supervisor -->
+                  <td *ngIf=" celulas.Celula == 0 " > 
+                    <span (click)="supervisorDatos(celulas)" class="align-middle mx-1 text-warning mano" data-bs-toggle="modal" data-bs-target="#editModalSupervisor">
+                      <mat-icon aria-hidden="false" aria-label="Example home icon">drive_file_rename_outline</mat-icon>
+                    </span> 
+                  </td>
+                </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fixed-bottom text-end" *ngIf="tablas">
+    <div class="row" >
+      <div *ngIf="addClick" class="col-sm-11 animate__animated {{ addClass ? 'animate__fadeInRight' : 'animate__fadeOutRight'}}">
+        <!-- DELETE -->
+        <button type="button" class="btn btn-danger btn-circle btn-xl mb-3 me-2" 
+                data-bs-placement="top" title="Borrar"
+                data-bs-toggle="modal" data-bs-target="#deleteNombresModal">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">delete_sweep</mat-icon>
+        </button>
+        <!-- COORDINADOR ADD -->
+        <button type="button" class="btn color-coor btn-circle btn-xl mb-3 me-2" 
+                data-bs-placement="top" title="Coordinador"
+                data-bs-toggle="modal" data-bs-target="#editModalCoord" 
+                (click)="newCoordinadorDatos()">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">reduce_capacity</mat-icon>
+        </button>
+        <!-- SUBCOORDINADOR ADD -->
+        <button type="button" class="btn color-sb btn-circle btn-xl mb-3 me-2" 
+                data-bs-placement="top" title="SubCoordinador"
+                data-bs-toggle="modal" data-bs-target="#editModalSubC" 
+                (click)="newsubCoordinadorDatos()">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">groups</mat-icon>
+        </button>
+        <!-- SUPERVISOR ADD 
+        <button type="button" class="btn color-s btn-circle btn-xl mb-3 me-2"
+                data-bs-placement="top" title="Supervisor"
+                data-bs-toggle="modal" data-bs-target="#editModalSupervisor"
+                (click)="newSupervisorDatos()">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">supervisor_account</mat-icon>
+        </button>-->
+        <!-- LIDER ADD -->
+        <button type="button" class="btn color-c btn-circle btn-xl mb-3 me-2" 
+                data-bs-placement="top" title="Líder"
+                data-bs-toggle="modal" data-bs-target="#editModal"
+                (click)="newCelulaDatos()">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">person</mat-icon>
+        </button>
+      </div>
+      <div class="col">
+        <button type="button" class="btn btn-success btn-circle btn-xl mb-3 me-2"
+              data-bs-placement="top" title="Agregar Cargo"
+              (click)="mostrarAddBtns()">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">add</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead" id="exampleModalLabel">
+          {{ btnSuccess ? 'Agregar Celula' : 'Nivel de estructura a Editar' }}
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="datosEditCelula()" [formGroup]="formCelulaEdit">
+          <!-- Supervisor o Celula -->
+          <div class="mb-3">
+            <label for="lider" class="form-label">¿Celula Supervisor?</label>
+            <select class="form-select" aria-label="Default select example" 
+                    (change)="esSupervisor()"
+                    formControlName="esSupervisor">
+              <option value=0>no</option>
+              <option value=1>si</option>
+            </select>
+          </div>
+          <!-- NUMERO -->
+          <div class="mb-3">
+            <label for="Celula" class="form-label">Numero de Celula</label>
+            <input type="number" class="form-control" 
+                    id="Celula" 
+                    placeholder="Numero"
+                    formControlName="celula">
+            <div class="text-danger" *ngIf="numeroCelulaValido()">
+                Numero de Celula ya está en uso
+            </div>
+          </div>
+          <!-- Stado -->
+          <div class="mb-3">
+            <label for="lider" class="form-label">Estado</label>
+            <select class="form-select" aria-label="Default select example" formControlName="stado">
+              <option value="1">Activa</option>
+              <option value="0">Inactiva</option>
+            </select>
+          </div>
+          <!-- FECHA DE NACIMIENTO -->
+          <div class="mb-3">
+            <label for="fechaN" class="form-label">Fecha de nacimiento de la Celula</label>
+            <input type="date" 
+                    class="form-control" 
+                    id="fechaN"
+                    formControlName="fechaN">
+          </div>
+          <!-- Lider -->
+          <div class="mb-3">
+            <label for="lider" class="form-label">Líder</label>
+            <input type="text" 
+                    class="form-control" 
+                    id="lider"
+                    formControlName="lider">
+          </div>
+          <!-- SELECT Coordinadores -->
+          <p class="text-center"><strong>{{ btnSuccess ? 'Estructura' : 'Modificar estructura actual' }}</strong></p>
+          <hr>
+          <div class="mb-3">
+            <label for="lider" class="form-label">Coordinador</label>
+            <select class="form-select" aria-label="Default select example" formControlName="coor" (change)="selectCoordChange($event.target.value)" >
+              <option *ngFor="let coord of listCoord" 
+                      value="{{coord?.coordinacion}}"> {{ coord?.nombre }} </option>
+            </select>
+          </div>
+          <!-- SELECT SUBCoordinadores -->
+          <div class="mb-3">
+            <label for="lider" class="form-label">SubCoordinador</label>
+            <select class="form-select" aria-label="Default select example" formControlName="subC" (change)="selectSubCChange()">
+              <option *ngFor="let sb of selectSubCoord"
+                      value="{{sb?.subCoor}}"> {{sb.nombre}} </option>
+            </select>
+          </div>
+          <!-- SELECT Supervisor -->
+          <div class="mb-3" *ngIf="ocultarSelectSuperv" >
+            <label for="lider" class="form-label">Supervisor</label>
+            <select class="form-select" aria-label="Default select example" formControlName="supervisor">
+              <option *ngFor="let s of selectSupervisor"
+                      value="{{ s?.Supervisor }}"> {{ s.Lider }} </option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button *ngIf="btnSuccess" type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
+            <button *ngIf="!btnSuccess" type="submit" class="btn btn-warning" data-bs-dismiss="modal">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal SUPERVISOR -->
+
+<div class="modal fade" id="editModalSupervisor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead" id="exampleModalLabel">
+          {{ btnSuccess ? 'Agregar Supervisor' : 'Nivel de estructura a Editar' }}
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="datosEditSupervisor()" [formGroup]="formSupervisorEdit">
+          <!-- SELECT  -->
+          <div class="mb-3">
+            <label for="lider" class="form-label">persona responsable del cargo</label>
+            <!-- Lider -->
+            <select (change)="selectCambioSupervisor()" *ngIf="!btnSuccess" class="form-select" aria-label="Default select example" formControlName="supervisor">
+              <option value="0"> sin Supervisor </option>
+              <option *ngFor="let s of selectLider"
+                      value="{{ s?.Celula }}"> {{ s?.Lider }} </option>
+            </select>
+            <!-- Supervisor Sistema de agregar supervisor Modificado 
+            <select  *ngIf="btnSuccess" class="form-select" aria-label="Default select example" formControlName="supervisor">
+              <option value="0"> sin supervisor </option>
+              <option *ngFor="let s of selectSupervisor"
+                      value="{{ s?.Celula }}"> {{ s?.Lider }} </option>
+            </select>-->
+            <div class="alert alert-warning" role="alert">
+              En cada SubCoordinacion solo puede haber 1 "sin supervisor"
+              Si ya existe uno y elige la opcion "sin supervisor" ambas supervisiones se Fucionaran 
+            </div>
+            <div class="mb-3 alert alert-success" *ngIf="mostrarNombreSupervisor" >
+              <label for="nombreSupervisor" class="form-label">Nombre:</label>
+              <input type="text" class="form-control" id="nombreSupervisor" formControlName="nombreSupervisor">
+            </div>
+          </div>
+          <!-- SELECT Coordinadores -->
+          <p class="text-center"><strong>Estructura actual</strong></p>
+          <hr>
+          <div class="mb-3">
+            <label for="lider" class="form-label">Coordinador</label>
+            <select class="form-select" aria-label="Default select example" formControlName="coor" (change)="selectCoordChange($event.target.value)" >
+              <option *ngFor="let coord of listCoord" 
+                      value="{{coord?.coordinacion}}"> {{ coord?.nombre }} </option>
+            </select>
+          </div>
+          <!-- SELECT SUBCoordinadores EDITAR -->
+          <div class="mb-3" *ngIf="!btnSuccess">
+            <label for="lider" class="form-label">SubCoordinador</label>
+            <select class="form-select" aria-label="Default select example" formControlName="subC">
+              <option *ngFor="let sb of selectSubCoord"
+                      value="{{sb?.subCoor}}"> {{sb.nombre}} </option>
+            </select>
+          </div>
+          <!-- SELECT SUBCoordinadores NUEVO -->
+          <div class="mb-3" *ngIf="btnSuccess">
+            <label for="lider" class="form-label">SubCoordinador</label>
+            <select class="form-select" aria-label="Default select example" formControlName="subC" (change)="selectSubCChange2()">
+              <option *ngFor="let sb of selectSubCoord"
+                      value="{{sb?.subCoor}}"> {{sb.nombre}} </option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button *ngIf="btnSuccess" type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
+            <button *ngIf="!btnSuccess" type="submit" class="btn btn-warning" data-bs-dismiss="modal">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal SUBCOORDINADOR -->
+
+<div class="modal fade" id="editModalSubC" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead" id="exampleModalLabel">
+          {{ btnSuccess ? 'Agregar SubCoordinador' : 'Nivel de estructura a Editar' }}
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="datosEditSubCoor()" [formGroup]="formSubCoordEdit">
+          <!-- NUMERO -->
+          <div class="mb-3">
+            <label for="Celula" class="form-label">Numero</label>
+            <input type="number" class="form-control" 
+                    id="Celula" 
+                    placeholder="Numero"
+                    formControlName="numero">
+            <div class="text-danger" *ngIf="numeroScValido()">
+                Numero de SubCoordinador ya está en uso
+            </div>
+          </div>
+          <!-- NOMBRE -->
+          <div class="mb-3">
+            <label for="lider" class="form-label">Nombre</label>
+            <input type="text" 
+                    class="form-control" 
+                    id="lider"
+                    formControlName="nombre">
+          </div>
+          <!-- SELECT Coordinadores -->
+          <p class="text-center"><strong>Estructura actual</strong></p>
+          <hr>
+          <div class="mb-3">
+            <label for="lider" class="form-label">Coordinador</label>
+            <select class="form-select" aria-label="Default select example" formControlName="coor">
+              <option *ngFor="let coord of listCoord" 
+                      value={{coord?.coordinacion}}> {{ coord?.nombre }} </option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button *ngIf="btnSuccess" type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
+            <button *ngIf="!btnSuccess" type="submit" class="btn btn-warning" data-bs-dismiss="modal">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal COORDINADOR -->
+
+<div class="modal fade" id="editModalCoord" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead" id="exampleModalLabel">
+          {{ btnSuccess ? 'Agregar Coordinador' : 'Nivel de estructura a Editar' }}
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="datosEditCoor()" [formGroup]="formCoordinadordEdit">
+          <!-- NUMERO -->
+          <div class="mb-3">
+            <label for="Celula" class="form-label">Numero</label>
+            <input type="number" class="form-control" 
+                    id="Celula" 
+                    placeholder="Numero"
+                    formControlName="numero">
+            <div class="text-danger" *ngIf="numeroCoorValido()">
+                Numero de Coordinador ya está en uso
+            </div>
+          </div>
+          <!-- NOMBRE -->
+          <div class="mb-3">
+            <label for="lider" class="form-label">Nombre</label>
+            <input type="text" 
+                    class="form-control" 
+                    id="lider"
+                    formControlName="nombre">
+          </div>
+          <div class="text-center">
+            <button *ngIf="btnSuccess" type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
+            <button *ngIf="!btnSuccess" type="submit" class="btn btn-warning" data-bs-dismiss="modal">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOORAR CELULA -->
+
+<div class="modal fade" id="deleteCelulaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead" id="exampleModalLabel">
+          BORRAR CELULA
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert">
+          Esta seguro de <strong>BORRAR</strong> los datos <strong>Celula, Sobres y Bautismos</strong> de manera permanente
+        </div>
+        <p>Celula: {{ celulaEdit?.Celula }}</p>
+        <p>Líder: {{ celulaEdit?.Lider }} </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="borrarCelula()" >BORRAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOORAR SubCoordinador o celula -->
+
+<div class="modal fade" id="deleteNombresModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead" id="exampleModalLabel">
+          BORRAR
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert">
+          Esta seguro de <strong>BORRAR Coordinadores</strong> de manera permanente
+        </div>
+        <!-- Lista para Borrar -->
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let c of listCoord">
+            <strong> {{ c?.coordinacion }} </strong> {{ c?.nombre }}
+            <span class="align-middle mx-2 text-danger mano" (click)="borrarNombre(c)" >
+              <mat-icon aria-hidden="false">delete_sweep</mat-icon>
+            </span>
+          </li>
+        </ul>
+        <div class="row justify-content-md-center pt-3" *ngIf="load" >
+          <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <hr>
+        <div class="alert alert-danger" role="alert">
+          Esta seguro de <strong>BORRAR SubCoordinadores</strong> de manera permanente
+        </div>
+        <div class="mb-3">
+          <select class="form-select" aria-label="Default select example" (change)="selectCoordChange($event.target.value)" >
+            <option value="0">Seleccionar Coordinacion.</option>
+            <option *ngFor="let coord of listCoord" 
+                    value="{{coord?.coordinacion}}"> {{ coord?.nombre }} </option>
+          </select>
+        </div>
+        <!-- Lista para Borrar -->
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let c of selectSubCoord">
+            <strong> {{ c?.subCoor }} </strong> {{ c?.nombre }}
+            <span class="align-middle mx-2 text-danger mano" (click)="borrarNombre(c)">
+              <mat-icon aria-hidden="false">delete_sweep</mat-icon>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<div class="container min-w-100">
+    <!-- Bienvenida -->
+    <div class="row justify-content-md-center">
+        <div class="col-md-9 col-sm-12 mt-5">
+            <div class="shadow p-3 bg-body rounded">
+                <p class="h3 text-center mt-2">Bienvenido</p>
+            </div>
+        </div>
+    </div>
+    <!-- Status -->
+    <div class="row justify-content-md-center">
+        <div class="col-md-9 col-sm-12 mt-2">
+            <div class="text-center" *ngIf="loader">
+                <div class="spinner-border text-secondary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="shadow p-3 bg-body rounded">
+                <p class="mt-2"><strong>Estado de la cuenta:</strong> {{ permiso }} </p>
+                <p><small> {{ info }} </small></p>
+            </div>
+            <div class="alert alert-warning" role="alert" *ngIf="estaVercion!=vercion" >
+                <span class="align-middle my-1">
+                    <mat-icon class="pt-2" aria-hidden="false" aria-label="Estructura">error_outline</mat-icon>
+                </span>
+                Esta versión de la Aplicación es Antigua | por favor Actualice ( Presione F5 o 
+                <button type="button" class="btn btn-outline-info btn-sm" onclick="location.reload()">
+                    <span class="align-middle">
+                        <mat-icon class="pt-1" aria-hidden="false" aria-label="actualizar">restart_alt</mat-icon>
+                    </span>
+                </button>
+                )
+            </div>
+            <div class="alert alert-success" role="alert" *ngIf="estaVercion==vercion" >
+                <span class="align-middle my-1">
+                    <mat-icon class="pt-2" aria-hidden="false" aria-label="Estructura">error_outline</mat-icon>
+                </span>
+                versión de la Aplicación {{ estaVercion }} | Actualizada.
+            </div>
+        </div>
+    </div>
+    <!-- Formulario Permisos -->
+    <div class="row justify-content-md-center" *ngIf="pedirPermiso">
+        <div class="col-md-9 col-sm-12 mt-2">
+            <div class="shadow p-3 bg-body rounded">
+            <form (ngSubmit)="formularioCuenta()" class="needs-validation" [formGroup]="formPermiso">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="country" class="form-label">Cuenta:</label>
+                        <select class="form-select" 
+                                formControlName="cuenta">
+                            <option value="Celula">Celula</option>
+                            <option value="Coordinacion">Coordinacion</option>
+                        </select>
+                        <div class="" *ngIf="campoValido('cuenta')">
+                            Please select a valid cuenta.
+                        </div>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <label for="zip" class="form-label"> {{ tipoCuenta() }}: </label>
+                        <input type="number" 
+                                formControlName="numero"
+                                class="form-control" >
+                        <div class="text-danger" *ngIf="campoValido('numero')">
+                            {{ tipoCuenta() }}* debe ser mayor a 0
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="firstName" class="form-label">Nombre:</label>
+                        <input type="text" 
+                                class="form-control"
+                                formControlName="nombre"
+                                placeholder="" >
+                        <div class="text-danger" *ngIf="campoValido('nombre')">
+                            Nombre* necesario
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="lastName" class="form-label">Telefono: <span class="text-muted">(opcional)</span></label>
+                        <input type="tel" 
+                                class="form-control" 
+                                formControlName="telefono"
+                                placeholder="9932">
+                        <div class="text-danger" *ngIf="campoValido('telefono')">
+                            Valid last telefono is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" 
+                                formControlName="email"
+                                class="form-control"
+                                disabled>
+                        <div class="text-danger" *ngIf="campoValido('email')">
+                            Please enter a valid email address for shipping updates.
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <button class="w-100 btn btn-primary btn-lg" type="submit">Enviar</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+

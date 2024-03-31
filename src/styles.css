@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mano{
+    cursor: pointer;
+}
+.min-w-100 { 
+    min-height: 80vh; 
+}
+
+@media print {
+    /* Se aplicará la siguiente regla CSS */
+    button,
+    [type="button"],
+    [type="submit"],
+    [type="reset"] {
+      display: none;
+    }
+    .amarillo{
+      background-color: #F4D03F;
+    }
+    .verde{
+      background-color: #2ECC71;
+    }
+    body{
+      background-color: white;
+    }
+    .navbar {
+      display: none;
+    }
+    .no-print{
+      display: none;
+    }
+    .container{
+      text-align: start;
+      justify-content: start;
+      min-width: 100%;
+  }
+
+  }

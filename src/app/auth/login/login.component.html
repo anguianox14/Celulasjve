@@ -1,0 +1,61 @@
+<div class="container mb-5">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-5 py-5 mx-1" >
+            <div class="card justify-content-md-center animate__animated animate__fadeIn">
+                <div class="text-center">
+                    <img  src="/assets/img/logo-icbjve.gif"
+                        width="100"
+                        class="mt-3 img-fluid" 
+                        alt="Iglesia Cristiana Bautista Jesucristo Es La Vida Eterna">
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title text-center">ICBJVE</h1>
+                    <h2 class="card-title text-center">Jesucristo Es La Vida Eterna</h2>
+                    <!-- Formulario -->
+                    <form (ngSubmit)="checkLogin()" [formGroup]="loginForm">
+                        <!-- Email -->
+                        <div class="form-floating">
+                            <input type="email" 
+                                    class="form-control"
+                                    formControlName="email"
+                                    placeholder="name@example.com">
+                            <label for="floatingInput" *ngIf="!campoEsValido('email')">Correo Electronico</label>
+                            <label for="floatingInput" *ngIf="campoEsValido('email')" class="text-danger">Correo Electronico*</label>
+                        </div>
+                        <!-- Password -->
+                        <div class="form-floating">
+                            <input type="password" 
+                                    class="form-control"
+                                    formControlName="password"
+                                    placeholder="Password">
+                            <label for="floatingPassword" *ngIf="!campoEsValido('password')" >Contraseña</label>
+                            <label for="floatingPassword" *ngIf="campoEsValido('password')" class="text-danger" >Contraseña*</label>
+                        </div>
+                        <!-- Spiner -->
+                        <div class="text-center mt-1" *ngIf="spiner">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <!-- Boton -->
+                        <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Entrar</button>
+                        <!-- Mensaje -->
+                        <div class="alert alert-warning" role="alert" *ngIf="showText">
+                            {{ menssage }}
+                        </div>
+                        <!-- Recuperar -->
+                        <div class="text-center mt-3">
+                            <a class="nav-link" routerLink="/login/recuperar" > ¿Olvidaste Tu Contraseña? </a>
+                        </div>
+                        
+                    </form>
+                    <hr>
+                    <!-- Crear Cuenta -->
+                    <div class="text-center mt-1">
+                        <button class="btn btn-sm btn-success" type="button" routerLink="/login/registro">Crear Cuenta Nueva</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>

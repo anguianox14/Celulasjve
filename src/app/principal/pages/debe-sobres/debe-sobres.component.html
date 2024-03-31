@@ -1,0 +1,88 @@
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-12 shadow p-3 my-4 bg-body rounded text-center no-print">
+            <p class="h5"> Reporte Debe Sobre ICBJVE </p>
+            <div class="row justify-content-md-center pt-3">
+              <div class="col-md-12">
+                <app-select-ciclos 
+                        showCoord="si"
+                        showSemana="no"
+                        showPeriodo="no"
+                        showInactivas="no"
+                        (onSeendCicloSemana)="obtenerCiclo( $event )">
+                </app-select-ciclos>
+              </div>
+            </div>
+            <div class="row justify-content-md-center pt-3" *ngIf="load" >
+              <div class="col-md-6">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 pt-2 text-center" *ngIf="mostrarTabla">
+                <button type="button" class="btn btn-info" onclick="javascript:window.print()">Imprimir</button>
+                <app-btn-excel
+                                tabla_Im = "reporteDebeSobre"
+                                nombreT = "R DebeSobre"
+                                >
+                </app-btn-excel>
+            </div>
+        </div>
+        <!-- TABLA -->
+        <div class="col-sm-12 printTabla" *ngIf="mostrarTabla" id="reporteDebeSobre">
+            <div *ngFor="let subC of tablas">
+                <div class="row table-responsive">
+                    <table class="table table-bordered table-hover table-sm text-center text-12 mb-1">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <td colspan="2">
+                                    <img src="/assets/img/logo-icbjve-letras.gif" alt="" width="110" class="d-inline-block align-text-top">
+                                </td>
+                                <td colspan="46">
+                                    <p class="h6 mt-2 mb-0">I.C.B. "JESUCRISTO ES LA VIDA ETERNA"</p>
+                                    <p class="h7 my-0">Reporte Debe Sobre</p>
+                                    <p class="h7 my-0">
+                                        <strong>Coordinador</strong>: {{ nombreCoord(subC[0]?.Coordinacion) | titlecase }}
+                                    </p>
+                                    <p class="h7 my-0">
+                                        <strong>SubCoordinador: {{ subC[0]?.SubCoor }} </strong> {{ nombreSubC(subC[0]?.Coordinacion,subC[0]?.SubCoor) | titlecase }}
+                                    </p>
+                                </td>
+                                <td colspan="6">
+                                    <p class="h7 my-0">
+                                        <strong> {{ fechaHoy | date}} </strong>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="col"></th>
+                                <th class="text-start min-ancho" scope="col">Nombre</th>
+                                <th class="semenas" *ngFor="let s of semanasTablaDebeSobre;let i = index" >
+                                    {{ i+1 }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let celula of subC; let i = index" class="{{ color(celula?.Celula) }}" [ngStyle]="{ 'background-color':celula?.Celula === 0 ? '#C0392B' : '' }">
+                                {{ modificarListaSobres( celula ) }}
+                                <th class="semenas"> {{ celula?.Celula == 0 ? "" : celula?.Celula }} </th>
+                                <td class="text-start"> {{ (celula?.Lider.length>25) ? ((celula?.Lider | slice:0:25)+'..' | titlecase) : (celula?.Lider) | titlecase }} </td>
+                                <td class="{{ s === 'x' ? 'equis' : 'semenas' }}" *ngFor="let s of semanasTablaDebeSobre;let j = index" >
+                                    {{ s }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        <div class="col-2">✓ = sobre verificado</div>
+                        <div class="col-2">• = sin verificar</div>
+                        <div class="col-2">x = sin sobre</div>
+                        <div class="col-2">š = sobre sin datos</div>
+                        <div class="col-2">¢ = no realizó culto</div>
+                        <div class="col-2">Φ = sin ofrenda</div>
+                </div>
+                <div class="pagebreak" ></div>
+            </div>
+        </div>
+    </div>
+</div>

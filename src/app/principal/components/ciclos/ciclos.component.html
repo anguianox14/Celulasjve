@@ -1,0 +1,187 @@
+<!-- ******************************* Titulo Ciclos **************************************************** --> 
+<div class="row">
+    <div class="col-md-4 col-sm-12">
+        <p class="h5">Ciclos</p>
+    </div>
+    <div class="col-md-5 col-sm-12 text-center" >
+        <button type="button" class="btn btn-success btn-sm" 
+                data-bs-toggle="modal" 
+                data-bs-target="#formularioAdd"
+                (click)="iniciarForm()">
+            <span class="aling-middle"> <mat-icon [inline]="true" >add</mat-icon> </span>
+        </button>
+    </div>
+    <div class="col-2" *ngIf="load">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <hr>
+    <!--
+     Periodo 
+     -->
+    <div class="col-12">
+        <ul class="list-group border-white" >
+            <li class="list-group-item border-white"
+                    *ngFor="let ciclo of listCiclos;let i = index"> 
+                <strong>{{i+1}}.-{{ ciclo?.nombre }} </strong>
+                <span class="align-middle mx-3 text-danger mano" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalRemove"
+                        (click)="mostrarFormulario(ciclo)">
+                    <mat-icon>delete_outline</mat-icon>
+                </span>
+                <span class="align-middle mx-1 text-success mano" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalCopyEstruc"
+                        (click)="mostrarFormulario(ciclo)">
+                    <mat-icon>content_copy</mat-icon>
+                </span>
+            </li>
+        </ul>
+    </div>
+    <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+            No borrar Ciclos con información guardada
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            Cuando se crea un nuevo Ciclo, puede tardar unos minutos los primeros registros de sobres y celulas
+        </div>
+    </div>
+</div>
+
+<!-- ADD Modal Ciclo -->
+
+<div class="modal fade" id="formularioAdd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="lead">
+              Agregar Ciclo
+          </p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form (submit)="addCiclo()" [formGroup]="formCiclo" >
+            <div class="row">
+                <div class="col-4">
+                    <label for="formControlInput1" class="form-label">Fecha Inicio:</label>
+                    <input type="date" class="form-control" id="formControlInput1"
+                            formControlName="fechaI"
+                            (change)="cacularSemanaFinal()">
+                </div>
+                <div class="col-4">
+                    <label for="formControlInput2" class="form-label">Semanas:</label>
+                    <input type="number" class="form-control" id="formControlInput2"
+                            formControlName="semana"
+                            (change)="cacularSemanaFinal()">
+                </div>
+                <div class="col-4 pb-">
+                    <label for="formControlInput3" class="form-label">Fecha Limite:</label>
+                    <input type="date" class="form-control" id="formControlInput3"
+                            formControlName="fechaF"
+                            (change)="calcularSemana()">
+                </div>
+                <div class="col-12 text-center pt-3">
+                    <div class="alert alert-primary" role="alert">
+                        La fecha de Inicio de su ciclo, calculara la fecha final, contando el numero de semanas especificado. Elija un lunes inicial se calculara un domingo en la fecha final.
+                    </div>
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal Borrar -->
+
+<div class="modal fade" id="modalRemove" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="lead">
+              Borrar Ciclo
+          </p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger" role="alert">
+                ¿Esta Seguro de <strong>BORRAR</strong> permanentemente el ciclo?
+            </div>
+            <p>Fecha Inicial: <strong>{{ cicloSeleccionado?.fechaInicial }}</strong></p>
+            <p>Fecha Fianl: <strong>{{ cicloSeleccionado?.fechaFinal }}</strong></p>
+            <p>Numero de Semanas: <strong>{{ cicloSeleccionado?.nSemanas }}</strong></p>
+            <p>Nombre: <strong>{{ cicloSeleccionado?.nombre }}</strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="deleteCiclo()" data-bs-dismiss="modal" class="btn btn-danger">BORRAR</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal Copiar Estructura de Ciclo Anterior -->
+
+<div class="modal fade" id="modalCopyEstruc" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="lead">
+              Copiar Estructura de Ciclo Anterior
+          </p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form (submit)="copyStruc()" [formGroup]="formCopyStruc" >
+                <div class="alert alert-primary" role="alert">
+                    Esta Herramienta le permite Copiar las <strong>Celulas, Supervisores, SubCoordinadores, Coordinadores</strong>
+                    de un Ciclo anterior, No Copia Sobres, Bautismos, ni otros datos.
+                </div>
+                <div class="alert alert-success" role="alert">
+                    <strong>Solo usar en Ciclos Nuevos.</strong> 
+                </div>
+                <p>Ciclo Seleccionado: <strong> {{ cicloSeleccionado?.nombre }} </strong></p>
+                <p> Estructura a copiar de: </p>
+                <!-- Ciclos Select -->
+                <select class="form-select" aria-label="Default select example" formControlName="ciclo">
+                    <option> seleccionar </option>
+                    <option *ngFor="let ciclo of listCiclos">
+                        {{ ciclo.nombre }} </option>
+                </select>
+                <!-- ** -->
+                <div class="alert alert-danger mt-3" role="alert">
+                    <strong>No Usar esta Herramienta en Ciclos que ya tienen Agregados Celulas, Supervisores, SubCoordinadores, Coordinadores</strong>
+                </div>
+                <hr>
+                <div class="text-center" *ngIf="mostrarCarga">
+                    <div class="spinner-border" role="status" *ngIf="loadCopyStruc">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        <p>Nombres Copiados: {{ numeroNombresCopiados }}</p>
+                        <p>Celulas Copiadas: {{ numeroCelulasCopiadas }}</p>
+                        <strong>{{mensaje}}</strong>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-warning">COPIAR ESTRUCTURA</button>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+

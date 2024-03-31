@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-md-6 my-3 shadow-sm p-3 mb-5 bg-body rounded">
+      <figure>
+        <blockquote class="blockquote">
+          <p>Cuentas Solicitando Permisos</p>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+          Mostrando todas las cuentas <cite title="Source Title">Pendientes</cite>
+        </figcaption>
+      </figure>
+      <hr>
+      <div class="text-center">
+        <p>Mostrar: </p>
+        <button type="button" class="btn btn-primary btn-sm" (click)="getCuentas()" > {{ btnTab }} </button>
+      </div>
+    </div>
+    <div class="col-md-12 text-center" *ngIf="loader">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+  </div>
+  <div class="py-3 table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>
+        <td mat-cell *matCellDef="let element; let i = index"> {{ i+1 }} </td>
+      </ng-container>
+    
+      <!-- Name Column -->
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
+        <td mat-cell *matCellDef="let element"> {{element.createFecha}} </td>
+      </ng-container>
+    
+      <!-- Weight Column -->
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+        <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+      </ng-container>
+    
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="cuenta">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Cuenta </th>
+        <td mat-cell *matCellDef="let element"> {{element.cuenta}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Numero </th>
+        <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="permiso">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Permiso </th>
+        <td mat-cell *matCellDef="let element"> {{element.permiso}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="btnEdit">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>  </th>
+        <td mat-cell *matCellDef="let element"> 
+          <span class="align-middle mano">
+            <mat-icon (click)="editarCModal(element)" aria-hidden="false" aria-label="Example home icon" data-bs-toggle="modal" data-bs-target="#exampleModal">more_vert</mat-icon>
+          </span>
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead">
+          Permisos Cuenta:
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarModal()" [formGroup]="formCuentaModal">
+          <div class="shadow-sm p-2 mb-1 bg-body rounded"> <p class="my-2"><strong>Nombre: </strong>{{ modalCuenta?.nombre }}</p></div>
+          <div class="shadow-sm p-2 mb-1 bg-body rounded"> <p class="my-2"><strong>Email: </strong> {{ modalCuenta?.email }}</p></div>
+          <div class="shadow-sm p-2 mb-1 bg-body rounded"> <p class="my-2"><strong>Fecha: </strong> {{ modalCuenta?.createFecha }}</p></div>
+          <div class="shadow-sm p-2 mb-1 bg-body rounded"> <p class="my-2"><strong>Telefono: </strong> {{ modalCuenta?.telefono }}</p></div>
+          <div class="shadow-sm p-2 mb-1 bg-body rounded row">
+            <label for="inputPassword" class="col-sm-2 col-form-label"> <strong>Cuenta:</strong> </label>
+            <div class="col-sm-10">
+              <select class="form-select" formControlName="tipoCuenta" >
+                <option value="Celula">Celula</option>
+                <option value="Coordinacion">Coordinador</option>
+                <option value="Director">Director</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+        </div>
+          <div class="shadow-sm p-2 mb-1 bg-body rounded row">
+            <label for="inputPassword" class="col-sm-2 col-form-label"><strong>Numero: </strong></label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" formControlName="numero">
+            </div>
+          </div>
+          <div class="shadow-sm p-2 mb-1 bg-body rounded row">
+              <label for="inputPassword" class="col-sm-2 col-form-label"> <strong>Permiso:</strong> </label>
+              <div class="col-sm-10">
+                <select class="form-select" formControlName="permiso" >
+                  <option value="pendiente">Pendiente</option>
+                  <option value="acceso permitido">Acceso permitido</option>
+                  <option value="acceso denegado">Acceso denegado</option>
+                </select>
+              </div>
+          </div>
+          <hr>
+          <div class="text-center">
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>

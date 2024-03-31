@@ -1,0 +1,211 @@
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-12 shadow p-3 my-4 bg-body rounded text-center no-print">
+        <p class="h5"> Bautismos ICBJVE </p>
+        <div class="row justify-content-md-center pt-3">
+          <div class="col-md-6">
+            <app-select-ciclos 
+                      showSemana="no"
+                      showPeriodo="si"
+                      (onSeendCicloSemana)="obtenerCiclo( $event )">
+            </app-select-ciclos>
+          </div>
+        </div>
+        <div class="row justify-content-md-center pt-3" *ngIf="load" >
+          <div class="col-md-6">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 pt-2 text-center" *ngIf="bautismosList">
+          <button type="button" class="btn btn-info" onclick="javascript:window.print()">Imprimir</button>
+          <app-btn-excel
+              tabla_Im = "ListBautismos"
+              nombreT = "Lista Bautismos"
+              >
+          </app-btn-excel>
+        </div>
+    </div>
+    <!-- TABLA DE BAUTISMOS -->
+    <div class="col-12 my-4 table-responsive" *ngIf="bautismosList" id="ListBautismos" >
+      <table class="table table-sm table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Dirección</th>
+            <th scope="col">Tel C.</th>
+            <th scope="col">Tel</th>
+            <th scope="col">Celula</th>
+            <th scope="col">Coordinación</th>
+            <th scope="col">P. Espiritual</th>
+            <th scope="col">Tel.P.E.</th>
+            <th class="min-ancho-btn" ></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of bautismosList; let i=index">
+            <th scope="row"> {{ i+1 }} </th>
+            <td class="text-start min-ancho"> {{ b?.nombre | titlecase }} </td>
+            <td class="text-start min-ancho-B"> {{ b?.domicilio | titlecase }} </td>
+            <td> {{ b?.telefonoC }} </td>
+            <td> {{ b?.telefono }} </td>
+            <td class="text-center"> {{ b?.celula }} </td>
+            <td class="text-center"> {{ redondearCelula(b?.celula) }} </td>
+            <td> {{ b?.padreEspiritual | titlecase }} </td>
+            <td> {{ b?.telefonoPE }} </td>
+            <td> 
+              <!-- Editar -->
+              <span class="align-middle mx-2 text-warning mano"
+                    (click)="mostrarEditModal(b)"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#bautismoModal"
+                    >
+                <mat-icon aria-hidden="false" aria-label="Example home icon">mode_edit</mat-icon>
+              </span> 
+              <!-- Eliminar -->
+              <span class="align-middle mx-2 text-danger mano"
+                    (click)="mostrarEditModal(b)"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#deleteModal">
+                <mat-icon aria-hidden="false" aria-label="Example home icon">delete_sweep</mat-icon>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="fixed-bottom text-end" *ngIf="bautismosList">
+    <button type="button" class="btn btn-success btn-circle btn-xl mb-3 me-2"
+              (click)="mostrarAddModal()"
+              data-bs-placement="top"
+              title="Agregar Bautismo"
+              data-bs-toggle="modal" 
+              data-bs-target="#bautismoModal"
+              >
+      <mat-icon aria-hidden="false" aria-label="Example home icon">add</mat-icon>
+    </button>
+  </div>
+</div>
+
+<!-- MODAL ADD BAUTISMO -->
+
+<div class="modal fade" id="bautismoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead">
+          BAUTISMO
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="submitBautismo()" [formGroup]="formBautismo">
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label class="form-label">Nombre:<strong>*</strong></label>
+              <input type="text" class="form-control"  placeholder="Nombre Completo" formControlName="nombre">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Celula:<strong>*</strong></label>
+              <input type="number" class="form-control" placeholder="123" formControlName="celula">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Fecha:</label>
+              <input type="date" class="form-control" formControlName="fechaB">
+            </div>
+            <div class="col-6 mb-3">
+              <label for="exampleFormControlInput1" class="form-label">Sexo:</label>
+              <select class="form-select" aria-label="Default select example" formControlName="sexo">
+                <option selected>Seleccionar</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Fecha Nacimiento:</label>
+              <input type="date" class="form-control" formControlName="fechaNacimiento">
+            </div>
+            <div class="col-12 mb-3">
+              <label class="form-label">Domicilio:</label>
+              <input type="text" class="form-control"  placeholder="Col... Calle... No..." formControlName="domicilio">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Codigo Postal:</label>
+              <input type="number" class="form-control" placeholder="86126" formControlName="codigoPostal">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Correo:</label>
+              <input type="email" class="form-control" placeholder="...@gmail.com" formControlName="correo">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">N. Celular:</label>
+              <input type="tel" class="form-control" placeholder="993..." formControlName="telefonoC">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">N. Telefono:</label>
+              <input type="tel" class="form-control" placeholder="993..." formControlName="telefono">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Profecion:</label>
+              <input type="text" class="form-control" placeholder="Carpintero" formControlName="profesion">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Padre Espiritual:</label>
+              <input type="text" class="form-control" placeholder="Nombre Completo" formControlName="padreEspiritual">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Tel. Padre E:</label>
+              <input type="tel" class="form-control" placeholder="993..." formControlName="telefonoPE">
+            </div>
+          </div>
+          <div class="col-12 text-center">
+            <button *ngIf="!mostrarEditB" class="btn btn-success" type="submit">
+              <span *ngIf="loadbtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Guardar
+            </button>
+            <button *ngIf="mostrarEditB" class="btn btn-warning" type="submit" data-bs-dismiss="modal">
+              <span *ngIf="loadbtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Editar
+            </button>
+            <div class="alert alert-warning" role="alert" *ngIf="campoValid()">
+              Campo Nombre/Celula Sin datos
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="lead">
+          Borrar Bautismo
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert">
+          ¿Esta seguro de <strong>BORRAR</strong> de manera permanente el Bautismo?
+        </div>
+          <p>Periodo: {{ bautismoSeleccionado?.periodo }}</p>
+          <p>Nombre: {{ bautismoSeleccionado?.nombre }}</p> 
+          <p>Celula: {{ bautismoSeleccionado?.celula }}</p> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button (click)="borrarBautismo()" type="button" data-bs-dismiss="modal" class="btn btn-danger">BORRAR</button>
+      </div>
+    </div>
+  </div>
+</div>

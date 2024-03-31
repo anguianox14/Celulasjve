@@ -1,0 +1,119 @@
+<div class="container min-w-100">
+    <div class="row justify-content-md-center" >
+        <div class="col-md-6 col-sm-12 mt-4">
+            <div class="shadow p-3 bg-body rounded">
+                <div class="text-center">
+                    <img  src="/assets/img/logo-icbjve-letras.gif"
+                        width="100"
+                        class="img-fluid" 
+                        alt="Iglesia Cristiana Bautista Jesucristo Es La Vida Eterna">
+                </div>
+                <p class="lead mt-3">Sobre Celular</p>
+                <div class="text-center" *ngIf="loader">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div class="alert alert-danger" role="alert" *ngIf="celulaActiva">
+                    Numero de Celula: <strong>{{ celula }}</strong> no existe o esta inactiva. <strong> Por favor contacte con su autoridad para solucionarlo</strong>
+                </div>
+                <div *ngIf="!celulaActiva">
+                <div class="mt-4 text-center text-success" *ngIf="!formulario && !loader">
+                    <span class="align-middle">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon"> done_all </mat-icon>
+                    </span>
+                    <span><small>Semana:{{semanaG}} </small> <strong> Enviado.</strong></span>
+                </div>
+                <hr>
+                <form (ngSubmit)="sendSobre()" [formGroup]="sobre" *ngIf="formulario">
+                    <div class="row g-3 ">
+                        <div class="col-md-6">
+                            <label for="country" class="form-label">Celula:</label>
+                                <input type="number" 
+                                    formControlName="celula"
+                                    class="form-control" 
+                                    disabled>
+                            <div class="" *ngIf="campoValido('celula')">
+                                Numero de celula invalido
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="zip" class="form-label"> Semana: </label>
+                            <input type="number" 
+                                    formControlName="semana"
+                                    class="form-control" 
+                                    disabled>
+                            <div class="text-danger" *ngIf="campoValido('semana')">
+                                Semana* necesario
+                            </div>
+                        </div>
+                        <div class="col-sm-6 ">
+                            <div class="col-sm-12">
+                                <label for="firstName" class="form-label">Miembros:</label>
+                                <input type="number" 
+                                        class="form-control"
+                                        formControlName="miembros">
+                                <div class="text-danger" *ngIf="campoValido('miembros')">
+                                    Miembros* debe ser mayor igual a 0
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="lastName" class="form-label">Visitas:</label>
+                                <input type="number" 
+                                        class="form-control" 
+                                        formControlName="visitas">
+                                <div class="text-danger" *ngIf="campoValido('visitas')">
+                                    Visitas* debe ser mayor igual a 0
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="email" class="form-label">Niños:</label>
+                                <input type="number" 
+                                        formControlName="ninos"
+                                        class="form-control"
+                                        >
+                                <div class="text-danger" *ngIf="campoValido('ninos')">
+                                    Niños* debe ser mayor igual a 0
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12">
+                                <label for="lastName" class="form-label">Ofrendas:</label>
+                                <input type="number" 
+                                        class="form-control" 
+                                        formControlName="ofrenda">
+                                <div class="text-danger" *ngIf="campoValido('ofrenda')">
+                                    Ofrenda* debe ser mayor igual a 0
+                                </div> 
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="firstName" class="form-label">Diezmo Líder:</label>
+                                <input type="number" 
+                                        class="form-control"
+                                        formControlName="diezmoLider">
+                                <div class="text-danger" *ngIf="campoValido('diezmoLider')">
+                                    Diezmo Líder* debe ser mayor igual a 0
+                                </div> 
+                            </div>
+                            <div class="col-sm-12">
+                                <hr>
+                                <label for="firstName" class="form-label"><strong>¿Se realizo el culto?:</strong></label>
+                                <select class="form-select" aria-label="Default select example" formControlName="culto_hecho">
+                                    <option value="1">si</option>
+                                    <option value="0">no</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">Enviar</button>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

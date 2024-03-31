@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "celulasjve": {
+      "hosting": {
+        "celulasJve": [
+          "celulasjve"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "celulasjve"
+  }
+}

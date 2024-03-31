@@ -1,0 +1,128 @@
+<div class="container">
+    <div class="row justify-content-md-center no-print shadow p-2 bg-body rounded my-3">
+        
+        <div class="col-md-10  ">
+            <div class="col-md-12 py-3 text-center">
+                <p class="h5"> Reporte Ofrenda y Diezmo ICBJVE </p>
+            </div>
+            <app-select-ciclos 
+                showCoord="si"
+                showSemana="si"
+                showPeriodo="no"
+                showInactivas="no"
+                (onSeendCicloSemana)="obtenerCiclo( $event )">
+            </app-select-ciclos>
+        </div>
+        <div class="col-md-12 col-sm-12" *ngIf="load">
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 pt-2 text-center" *ngIf="mostrarTabla">
+            <button type="button" class="btn btn-info" onclick="javascript:window.print()">Imprimir</button>
+            <app-btn-excel
+                tabla_Im = "reporteDiezmoOfranda"
+                nombreT = "R Diezmo y Ofrenda"
+                >
+            </app-btn-excel>
+        </div>
+    </div>
+    <div *ngIf="mostrarTabla" id="reporteDiezmoOfranda">
+    <!-- TABLA -->
+        <div *ngFor="let subC of tablas;let i = index">
+            <div class="row table-responsive">
+                <table class="table table-bordered table-hover table-sm text-center">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <td colspan="2">
+                                <img src="/assets/img/logo-icbjve-letras.gif" alt="" width="110" class="d-inline-block align-text-top">
+                            </td>
+                            <td colspan="16">
+                                <p class="h6 mt-2 mb-0">I.C.B. "JESUCRISTO ES LA VIDA ETERNA"</p>
+                                <p class="h7 my-0">Reporte de datos del sobre</p>
+                                <p class="h7 my-0">
+                                    <strong>Coordinador</strong>: {{ nombreCoord(subC[0]?.Coordinacion) | titlecase }}
+                                </p>
+                                <p class="h7 my-0">
+                                    <strong>SubCoordinador: {{ subC[0]?.SubCoor }} </strong> {{ nombreSubC(subC[0]?.Coordinacion,subC[0]?.SubCoor) | titlecase }}
+                                </p>
+                            </td>
+                            <td colspan="4">
+                                <p class="h7 my-0">
+                                    <strong> {{ fechaHoy | date}} </strong>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">-</th>
+                            <th class="text-start min-ancho" scope="col">Nombre</th>
+                            <th scope="col"></th>
+                            <th scope="col" colspan="3">sem: {{ semana-4 }} </th>
+                            <th scope="col"></th>
+                            <th scope="col" colspan="3">sem: {{ semana-3 }}</th>
+                            <th scope="col"></th>
+                            <th scope="col" colspan="3">sem: {{ semana-2 }}</th>
+                            <th scope="col"></th>
+                            <th scope="col" colspan="3">sem: {{ semana-1 }}</th>
+                            <th scope="col"></th>
+                            <th scope="col" colspan="3">sem: {{ semana }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td></td>
+                            <td>OF</td>
+                            <td>DL</td>
+                            <td>T</td>
+                            <td></td>
+                            <td>OF</td>
+                            <td>DL</td>
+                            <td>T</td>
+                            <td></td>
+                            <td>OF</td>
+                            <td>DL</td>
+                            <td>T</td>
+                            <td></td>
+                            <td>OF</td>
+                            <td>DL</td>
+                            <td>T</td>
+                            <td></td>
+                            <td>OF</td>
+                            <td>DL</td>
+                            <td>T</td>
+                        </tr>
+                        <tr *ngFor="let celula of subC; let j = index" class="{{ color(celula?.Celula) }}" [ngStyle]="{ 'background-color':celula?.Celula === 0 ? '#C0392B' : '' }">
+                            <th scope="row"> {{ celula?.Celula == 0 ? "" : celula?.Celula }} </th>
+                            <td class="text-start"> {{ (celula?.Lider.length>30) ? (celula?.Lider | slice:0:30 | titlecase )+'..' : (celula?.Lider) | titlecase }} </td>
+                            <td class="color-vacio"> </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s5[0] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s5[1] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s5[2] }} </td>
+                            <td class="color-vacio"></td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s4[0] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s4[1] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s4[2] }} </td>
+                            <td class="color-vacio"></td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s3[0] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s3[1] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s3[2] }} </td>
+                            <td class="color-vacio"></td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s2[0] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s2[1] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s2[2] }} </td>
+                            <td class="color-vacio"></td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s1[0] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s1[1] }} </td>
+                            <td> {{ jsonSobres[celula?.Celula]?.s1[2] }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagebreak"></div>
+        </div>
+    </div>
+</div>

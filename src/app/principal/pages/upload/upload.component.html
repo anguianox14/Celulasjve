@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="row justify-content-md-center mb-3">
+        <div class="col-12 text-center mt-5">
+            <button class="btn btn-success" (click)="subirBd()">Subir Archivos</button>
+        </div>
+        <div class="col 12 text-center mt-5">
+            Celula Upload: {{ contador }} de: {{ this.bd.length }}
+        </div>
+    </div>
+    <app-upload-sobres></app-upload-sobres>
+    <hr>
+    <upload-bautisos></upload-bautisos>
+</div>

@@ -1,0 +1,32 @@
+.color-supervisor{
+    background-color: #C0392B;
+    color:white
+}
+.min-ancho{
+    min-width: 165px;
+}
+.semenas{
+    padding-left: 0;
+    padding-right: 0;
+    min-width: 1.2em;
+    font-weight: 400;
+}
+.equis{
+    padding-left: 0;
+    padding-right: 0;
+    min-width: 1.2em;
+    font-weight: 600;
+}
+.text-12{
+    font-size: 12px;
+}
+.pagebreak {
+    clear: both;
+    page-break-after: always;
+}   
+.table-sm {
+    font-size: 12px;
+}
+th, td{
+    padding: 0.1rem 0.1rem
+}

@@ -1,0 +1,64 @@
+<form (ngSubmit)="sendCicloSemana()" [formGroup]="formBuscar" class="row text-center justify-content-md-center" >
+    <!-- Coordinaciones -->
+    <div class="col-md-4 col-sm-12" *ngIf="(cuentaUsuario=='Admin' || cuentaUsuario=='Director') && showCoord == 'si' "  >
+        <div class="mb-3 row justify-content-md-center" >
+            <label class="col-sm-4 col-form-label">Coordinacion:</label>
+            <div class="col-sm-8">
+                <select class="form-select" formControlName="coordinacion" >
+                    <option value="-1">Todos</option>
+                    <option *ngFor="let coordinador of listCoordinadores" 
+                        value="{{ coordinador?.coordinacion }}"> {{ coordinador?.nombre }} </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <!-- Ciclos -->
+    <div class="col-md-4 col-sm-12 ">
+        <div class="mb-3 row justify-content-md-center">
+            <label class="col-sm-3 col-form-label">Ciclo:</label>
+            <div class="col-sm-9">
+                <select class="form-select" formControlName="ciclo" (change)="changeCoord()">
+                    <option *ngFor="let periodo of listPeriodos" 
+                        value="{{ periodo?.nombre }}"> {{ periodo?.nombre }} </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <!-- Semanas -->
+    <div class="col-md-3 col-sm-12" *ngIf="showSemana==='si'">
+        <div class="mb-3 row justify-content-md-center">
+            <label class="col-sm-5 col-form-label">Semana:</label>
+            <div class="col-sm-5">
+            <input type="number" 
+                    formControlName="semana"
+                    class="form-control" 
+                    onclick="this.select()">
+            </div>
+        </div>
+    </div>
+    <!-- Periodo -->
+    <div class="col-md-6 col-sm-12" *ngIf="showPeriodo==='si'">
+        <div class="mb-3 row justify-content-md-center">
+            <label class="col-sm-5 col-form-label">Periodo:</label>
+            <div class="col-sm-5">
+            <input type="number" 
+                    formControlName="periodo"
+                    class="form-control" 
+                    onclick="this.select()">
+            </div>
+        </div>
+    </div>
+    <!-- Mostrar Celulas Inactivas -->
+    <div class="col-md-3 text-start" *ngIf="showInactivas==='si'">
+        <div class="form-check form-switch my-2">
+            <input formControlName="inactivas" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Celulas inactivas</label>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert" *ngIf="formBuscar.invalid" >
+            Campos invalidos
+        </div>
+        <button class="btn btn-success" type="submit" > Buscar </button>
+    </div>
+</form>

@@ -1,0 +1,419 @@
+<div class="container">
+    <div class="row justify-content-md-center no-print ">
+        <div class="col-md-8 shadow p-2 bg-body rounded pt-4 my-5 ">
+            <!-- Buscar -->
+            <form (ngSubmit)="listSobres()" [formGroup]="formBuscar" class="row text-center" >
+                <div class="col-md-6 col-sm-12 ">
+                    <div class="mb-3 row justify-content-md-center">
+                        <label class="col-sm-4 col-form-label">Ciclo:</label>
+                        <div class="col-sm-8">
+                            <select class="form-select" formControlName="ciclo">
+                                <option *ngFor="let periodo of listPeriodos" 
+                                    value="{{ periodo?.nombre }}"> {{ periodo?.nombre }} </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="mb-3 row justify-content-md-center">
+                        <label class="col-sm-5 col-form-label">Semana:</label>
+                        <div class="col-sm-4">
+                        <input type="number" 
+                                formControlName="semana"
+                                class="form-control" 
+                                onclick="this.select()">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-success" type="submit" > Buscar </button>
+                    <div class="alert alert-warning" role="alert" *ngIf="formBuscar.invalid" >
+                        Campos invalidos
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-12 col-sm-12" *ngIf="loader">
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tabla -->
+    <div *ngIf="sobres">
+        <div class="col-md-12 col-sm-12 row">
+            <div class="col-4 text-center">
+                <img src="/assets/img/logo-icbjve-letras.gif" alt="" width="110" class="d-inline-block align-text-top">
+            </div>
+            <div class="col-6 text-center">
+                <p class="h6 mt-2 mb-0">I.C.B. "JESUCRISTO ES LA VIDA ETERNA"</p>
+                <p class="h7 my-0">Sistema Celular</p>
+                <p class="h7 my-0">Lista de datos del sobre</p>
+            </div>
+            <div class="col-2">
+                <p class="h7 mt-2 mb-0"><strong> Fecha: {{ fechaHoy | date}}</strong></p>
+            </div>
+        </div>
+        <div class="row table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Celula</th>
+                    <th scope="col"></th>
+                    <th scope="col">M</th>
+                    <th scope="col">V</th>
+                    <th scope="col">N</th>
+                    <th scope="col">T</th>
+                    <th scope="col"></th>
+                    <th scope="col">OF</th>
+                    <th scope="col">DL</th>
+                    <th scope="col">T</th>
+                    <th scope="col"></th>
+                    <th scope="col">Culto</th>
+                    <th scope="col"></th>
+                    <th class="max-w text-center" scope="col">C</th>
+                    <th class="max-w text-center" scope="col">E</th>
+                    <th class="max-w text-center" scope="col">B</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let sobre of sobres;let i = index">
+                    <th scope="row"> {{ sobre.celula }} </th>
+                    <td></td>
+                    <td> {{ sobre.miembros }} </td>
+                    <td> {{ sobre.visitas }} </td>
+                    <td> {{ sobre.ninos }} </td>
+                    <td> {{ (sobre.miembros + sobre.visitas + sobre.ninos) }} </td>
+                    <td></td>
+                    <td> {{ sobre.ofrenda }} </td>
+                    <td> {{ sobre.diezmoLider }} </td>
+                    <td> {{ (sobre.ofrenda + sobre.diezmoLider) }} </td>
+                    <td></td>
+                    <td *ngIf="sobre.culto_hecho == 1" >Si</td>
+                    <td *ngIf="sobre.culto_hecho == 0" >No</td>
+                    <td *ngIf="sobre.culto_hecho == 2" >S/D</td>
+                    <td></td>
+                    <td class="text-center"> 
+                        <span class="align-middle mx-1 mano" (click)="sobreVerificado(sobre)" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <mat-icon *ngIf="sobre.verificado" class="text-success" aria-hidden="false" aria-label="Example home icon">done_all</mat-icon>
+                            <mat-icon *ngIf="!sobre.verificado" class="text-info" aria-hidden="false" aria-label="Example home icon">priority_high</mat-icon>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="align-middle mx-1 text-warning mano" (click)="sobreFormulario(sobre)" data-bs-toggle="modal" data-bs-target="#editarSobreModal">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">edit_note</mat-icon>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="align-middle mx-1 text-danger mano" (click)="sobreVerificado(sobre)" data-bs-toggle="modal" data-bs-target="#borrarSobreModal">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">delete_sweep</mat-icon>
+                        </span>
+                    </td>
+                  </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="fixed-bottom text-end" *ngIf="sobres">
+        <button type="button" class="btn btn-success btn-circle btn-xl mb-3 me-3" (click)="newSobreFormulario()" data-bs-toggle="modal" data-bs-target="#addSobreModal" >
+            <mat-icon aria-hidden="false" aria-label="Example home icon">add</mat-icon>
+        </button>
+    </div>
+</div>
+<div *ngIf="sobres">
+
+<!-- ************************* MODAL Sobre Verificado ******************************* -->
+
+  <!-- Modal -->
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <p class="lead">
+                Sobre Celula: {{ sobreVerificar?.celula }}, Semana: {{ sobreVerificar?.semana }}
+            </p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row">
+            <div class="col-6">
+                <p><strong> M: </strong> {{ sobreVerificar?.miembros }} </p>
+                <p><strong> V: </strong> {{ sobreVerificar?.visitas }} </p>
+                <p><strong> N: </strong> {{ sobreVerificar?.ninos }} </p>
+            </div>
+            <div class="col-6">
+                <p><strong> OF: </strong> {{ sobreVerificar?.ofrenda }} </p>
+                <p><strong> DL: </strong> {{ sobreVerificar?.diezmoLider }} </p>
+            </div>
+            <hr>
+            <p> <strong>¿Estos datos corresponden al sobre fisico?</strong> </p> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-success" (click)="editarSobre(true)" *ngIf="!sobreVerificar?.verificado" data-bs-dismiss="modal">Si Verificado</button>
+          <button type="button" class="btn btn-warning" (click)="editarSobre(false)" *ngIf="sobreVerificar?.verificado" data-bs-dismiss="modal">des-verificar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ************************* MODAL Sobre BORRAR ******************************* -->
+  <!-- Modal -->
+  <div class="modal fade" id="borrarSobreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <p class="lead">
+                BORRAR Sobre Celula: {{ sobreVerificar?.celula }}, Semana: {{ sobreVerificar?.semana }}
+            </p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p> <strong>¿Estas seguro de BORRAR los datos de manera permanente?</strong> </p> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-danger" (click)="borrarSobre()" data-bs-dismiss="modal">BORRAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ************************* MODAL EDITAR Sobre ******************************* -->
+
+  <!-- Modal -->
+
+  <div class="modal fade" id="editarSobreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <p class="lead">
+                Sobre Celula: {{ sobreVerificar?.celula }}, Semana: {{ sobreVerificar?.semana }}
+            </p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row">
+            <form (ngSubmit)="editarSobreFormulario(true)" [formGroup]="sobre">
+                <div class="row g-3 ">
+                    <div class="col-md-6">
+                        <label for="country" class="form-label">Celula:</label>
+                            <input type="number" 
+                                formControlName="celula"
+                                class="form-control" 
+                                disabled>
+                        <div class="" *ngIf="campoValido('celula')">
+                            Numero de celula invalido
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="zip" class="form-label"> Semana: </label>
+                        <input type="number" 
+                                formControlName="semana"
+                                class="form-control" 
+                                disabled>
+                        <div class="text-danger" *ngIf="campoValido('semana')">
+                            Semana* necesario
+                        </div>
+                    </div>
+                    <div class="col-sm-6 ">
+                        <div class="col-sm-12">
+                            <label for="firstName" class="form-label">Miembros:</label>
+                            <input type="number" 
+                                    class="form-control"
+                                    formControlName="miembros"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('miembros')">
+                                Miembros* debe ser mayor igual a 0
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label for="lastName" class="form-label">Visitas:</label>
+                            <input type="number" 
+                                    class="form-control" 
+                                    formControlName="visitas"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('visitas')">
+                                Visitas* debe ser mayor igual a 0
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="email" class="form-label">Niños:</label>
+                            <input type="number" 
+                                    formControlName="ninos"
+                                    class="form-control"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('ninos')">
+                                Niños* debe ser mayor igual a 0
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="col-sm-12">
+                            <label for="lastName" class="form-label">Ofrendas:</label>
+                            <input type="number" 
+                                    class="form-control" 
+                                    formControlName="ofrenda"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('ofrenda')">
+                                Ofrenda* debe ser mayor igual a 0
+                            </div> 
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="firstName" class="form-label">Diezmo Líder:</label>
+                            <input type="number" 
+                                    class="form-control"
+                                    formControlName="diezmoLider"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('diezmoLider')">
+                                Diezmo Líder* debe ser mayor igual a 0
+                            </div> 
+                        </div>
+                        <div class="col-sm-12">
+                            <hr>
+                            <label for="firstName" class="form-label"><strong>¿Se realizo el culto?:</strong></label>
+                            <select class="form-select" aria-label="Default select example" formControlName="culto_hecho">
+                                <option value="1">si</option>
+                                <option value="0">no</option>
+                                <option value="2">no hay datos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <button class="w-100 btn btn-warning btn-lg" type="submit" data-bs-dismiss="modal">Editar</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ************************* MODAL ADD Sobre ******************************* -->
+
+  <!-- Modal -->
+
+  <div class="modal fade" id="addSobreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <p class="lead">
+                Nuevo Sobre de Celula
+            </p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row">
+            <form (ngSubmit)="agregarSobreFormulario()" [formGroup]="sobre" *ngIf="!loaderCelulas" >
+                <div class="row g-3 ">
+                    <div class="col-md-6">
+                        <label for="country" class="form-label">Celula:</label>
+                            <input type="number" 
+                                formControlName="celula"
+                                class="form-control" 
+                                #celulaInput
+                                onclick="this.select()">
+                        <div class="text-danger" *ngIf="celulaExiste()">
+                            Numero de celula no existe
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="zip" class="form-label"> Semana: </label>
+                        <input type="number" 
+                                formControlName="semana"
+                                class="form-control" 
+                                disabled>
+                        <div class="text-danger" *ngIf="campoValido('semana')">
+                            Semana* necesario
+                        </div>
+                    </div>
+                    <div class="col-sm-6 ">
+                        <div class="col-sm-12">
+                            <label for="firstName" class="form-label">Miembros:</label>
+                            <input type="number" 
+                                    class="form-control"
+                                    formControlName="miembros"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('miembros')">
+                                Miembros* debe ser mayor igual a 0
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label for="lastName" class="form-label">Visitas:</label>
+                            <input type="number" 
+                                    class="form-control" 
+                                    formControlName="visitas"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('visitas')">
+                                Visitas* debe ser mayor igual a 0
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="email" class="form-label">Niños:</label>
+                            <input type="number" 
+                                    formControlName="ninos"
+                                    class="form-control"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('ninos')">
+                                Niños* debe ser mayor igual a 0
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="col-sm-12">
+                            <label for="lastName" class="form-label">Ofrendas:</label>
+                            <input type="number" 
+                                    class="form-control" 
+                                    formControlName="ofrenda"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('ofrenda')">
+                                Ofrenda* debe ser mayor igual a 0
+                            </div> 
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="firstName" class="form-label">Diezmo Líder:</label>
+                            <input type="number" 
+                                    class="form-control"
+                                    formControlName="diezmoLider"
+                                    onclick="this.select()">
+                            <div class="text-danger" *ngIf="campoValido('diezmoLider')">
+                                Diezmo Líder* debe ser mayor igual a 0
+                            </div> 
+                        </div>
+                        <div class="col-sm-12">
+                            <hr>
+                            <label for="firstName" class="form-label"><strong>¿Se realizo el culto?:</strong></label>
+                            <select class="form-select" aria-label="Default select example" formControlName="culto_hecho">
+                                <option value="1">si</option>
+                                <option value="0">no</option>
+                                <option value="2">no hay datos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-danger" role="alert" *ngIf="sobreRepetido" >
+                    Sobre repetido
+                </div>
+                <hr class="my-4">
+                <button class="w-100 btn btn-success btn-lg" type="submit">Guardar</button>
+            </form>
+            <div *ngIf="loaderCelulas">
+                <p>por favor espere...</p>
+                <div class="spinner-border text-secondary" role="status" >
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="/assets/img/logo-icbjve-blanco.gif" alt="" width="28" class="d-inline-block align-text-top">
+            
+            <span class="align-middle ms-2">Celulas Jve</span>
+
+        </a>
+        <button class="navbar-toggler" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" 
+                aria-expanded="false" 
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse"  id="navbarNav" *ngIf="user$ | async as user">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item px-2">
+                    
+                    <a class="nav-link mano" routerLink="/home/inicio" routerLinkActive="active">
+                        <span class="align-middle">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon>
+                        </span>
+                        Home
+                    </a>
+                </li>
+                <!-- Sobre Celula -->
+                <li class="nav-item px-2" *ngIf="sobre">
+                    <a class="nav-link mano" routerLink="home/sobres" routerLinkActive="active">
+                        <span class="align-middle mx-1">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">post_add</mat-icon>
+                        </span>
+                        Sobres</a>
+                </li>
+                <!-- Sobre Admin -->
+                <li class="nav-item px-2" *ngIf="sobreAdmin">
+                    <a class="nav-link mano" routerLink="home/sobres-ofrenda" routerLinkActive="active">
+                        <span class="align-middle mx-1">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">fact_check</mat-icon>
+                        </span>
+                        Sobres</a>
+                </li>
+                <!-- Permisos Admin -->
+                <li class="nav-item px-2" *ngIf="permiso">
+                    <a class="nav-link mano" routerLink="home/permisos" routerLinkActive="active">
+                        <span class="align-middle mx-1">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">person_add</mat-icon>
+                        </span>
+                        Permisos</a>
+                </li>
+                <!--Lista -->
+                <li class="nav-item dropdown px-2" *ngIf="reportes">
+                    <a class="nav-link dropdown-toggle mano" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="align-middle mx-1">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">format_list_numbered</mat-icon>
+                        </span> 
+                        Reportes
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li *ngIf="tipo === 'Admin'" ><a class="dropdown-item" routerLink="home/reporte-ofrenda" routerLinkActive="active">
+                            Ofrenda Diezmo</a>
+                        </li>
+                        <li><a class="dropdown-item" routerLink="home/datos-sobres" routerLinkActive="active">
+                            Datos del Sobre</a>
+                        </li>
+                        <li><a class="dropdown-item" routerLink="home/debe-sobres" routerLinkActive="active">
+                            Debe Sobres</a>
+                        </li>
+                        <li><a class="dropdown-item" routerLink="home/reporte-bautismo" routerLinkActive="active">
+                            Bautismos</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item px-4" *ngIf="config">
+                    <a class="nav-link mano" routerLink="home/tools" routerLinkActive="active">
+                        <span class="align-middle mx-1">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">build</mat-icon>
+                        </span> 
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav-item px-2" *ngIf="acceso=='del'">
+                <li class="nav-link">
+                    <div class="spinner-grow spinner-grow text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                <a class="text-white mano" (click)="salir()">
+                    Salir
+                    <span class="align-middle mx-1">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon">logout</mat-icon>
+                    </span>
+                    {{user?.email}}
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,24 @@
+.color-supervisor{
+    background-color: #C0392B;
+    color:white
+}
+.col-b{
+    width: 2.5em;
+}
+.min-ancho{
+    min-width: 300px;
+}
+.pagebreak {
+    clear: both;
+    page-break-after: always;
+}
+.table-sm {
+    font-size: 13px;
+}
+th, td{
+    padding: 0.1rem 0.1rem
+}
+.color-vacio{
+    min-width: 1em;
+    background-color: white;
+}
